@@ -10,7 +10,7 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "nest start --watch",
+    "start:dev": "nest start --watch --debug",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -18,15 +18,27 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "db:reset": "npm run db:drop-schema && npm run db:reset-migrations",
+    "db:drop-schema": "ts-node -r ./tsconfig.json ./node_modules/typeorm/cli.js schema:drop",
+    "db:reset-migrations": "rimraf migrations && npm run db:drop-migrations-table && npm run db:create-migration -n  \"Init\" && npm run db:run-migration",
+    "db:drop-migrations-table": "ts-node ./node_modules/typeorm/cli.js query \"DROP TABLE IF EXISTS public.migrations;\"",
+    "db:create-migration": "ts-node ./node_modules/typeorm/cli.js migration:generate -n ",
+    "db:run-migration": "ts-node ./node_modules/typeorm/cli.js migration:run",
+    "db:sync": "npm run db:create-migration -n  \"Sync\" && npm run db:run-migration"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",
     "@nestjs/platform-express": "^8.0.0",
+    "@nestjs/typeorm": "^8.0.2",
+    "dotenv": "^10.0.0",
+    "pg": "^8.7.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "typeorm": "^0.2.37"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",
