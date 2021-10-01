@@ -6,3 +6,10 @@ Content-Type: application/json
     "lastName": "person"
 }
 ###
+# @name allUsers
+GET http://localhost:3000/user
+###
+@userId = {{allUsers.response.body.$[0].id}}
+
+GET http://localhost:3000/user/{{userId}}
+###
