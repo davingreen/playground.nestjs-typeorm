@@ -7,19 +7,26 @@ import { UserService } from './user/user.service';
 import { UserModule } from './user/user.module';
 import { User } from './user/user.entity';
 
+const region = process.env.AURORA_REGION || 'us-east-1';
+const resourceArn = process.env.AURORA_RESOURCE_ARN;
+const database = process.env.DB_NAME || 'postgres';
+const secretArn = process.env.DB_SECRET_ARN;
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'devenv.cluster-cpdxgqt0k2w8.us-east-1.rds.amazonaws.com',
-      port: 5432,
-      username: 'devenv',
-      password: 'nz_L7Sefu=o6vln-Z.RabNFvVctWnB',
-      database: 'devenv',
-      schema: 'playground-nestjs-typeorm',
+      type: 'aurora-data-api-pg',
+      database,
+      secretArn,
+      resourceArn,
+      region,
       entities: [User],
       synchronize: true,
       logging: true,
+      formatOptions: {
+        castParameters: true,
+        enableUuidHack: true,
+      },
     }),
     UserModule,
   ],
